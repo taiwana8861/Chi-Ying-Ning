@@ -1,492 +1,1123 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>嵇映甯｜运营监察与内部风控协作</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --line: #334155;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+      --warn: #f59e0b;
+      --card: #0b1220;
+      --shadow: 0 18px 50px rgba(0,0,0,.28);
+      --radius: 18px;
+      --max: 1120px;
+    }
 
-<title>嵇映甯｜运营监察与内部风控系统设计</title>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-<style>
+    body {
+      margin: 0;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #020617 0%, #0f172a 25%, #111827 100%);
+      color: var(--text);
+      line-height: 1.68;
+    }
 
-:root{
---bg:#0f172a;
---panel:#111827;
---text:#e5e7eb;
---muted:#94a3b8;
---line:#334155;
---accent:#38bdf8;
---radius:18px;
---max:1100px;
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-*{box-sizing:border-box}
+    .wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
 
-body{
-margin:0;
-font-family:"Microsoft YaHei","PingFang SC",sans-serif;
-background:linear-gradient(180deg,#020617 0%,#0f172a 30%,#111827 100%);
-color:var(--text);
-line-height:1.6;
-}
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+      background: rgba(2, 6, 23, .72);
+      border-bottom: 1px solid rgba(148, 163, 184, .14);
+    }
 
-.wrap{
-width:min(var(--max),calc(100% - 32px));
-margin:auto;
-}
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 68px;
+    }
 
-section{
-padding:60px 0;
-}
+    .brand {
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
 
-/* NAV */
+    .brand span {
+      color: var(--accent);
+    }
 
-.nav{
-position:sticky;
-top:0;
-background:rgba(2,6,23,.85);
-border-bottom:1px solid rgba(148,163,184,.12);
-backdrop-filter:blur(10px);
-}
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-.nav-inner{
-display:flex;
-justify-content:space-between;
-align-items:center;
-min-height:70px;
-}
+    .nav-links a {
+      color: var(--muted);
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+    }
 
-.brand{
-font-weight:700;
-}
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: rgba(56,189,248,.28);
+      background: rgba(56,189,248,.08);
+    }
 
-.brand span{
-color:var(--accent);
-}
+    .hero {
+      padding: 72px 0 40px;
+    }
 
-.nav-links{
-display:flex;
-gap:14px;
-}
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr .9fr;
+      gap: 26px;
+      align-items: stretch;
+    }
 
-.nav-links a{
-color:var(--muted);
-font-size:14px;
-padding:6px 10px;
-border-radius:999px;
-text-decoration:none;
-}
+    .hero-main, .hero-side {
+      background: rgba(15,23,42,.75);
+      border: 1px solid rgba(148,163,184,.14);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+    }
 
-.nav-links a:hover{
-background:rgba(56,189,248,.1);
-color:white;
-}
+    .hero-main {
+      padding: 34px;
+    }
 
-/* HERO */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #7dd3fc;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(56,189,248,.12);
+      border: 1px solid rgba(56,189,248,.22);
+      margin-bottom: 16px;
+    }
 
-.hero{
-padding:80px 0 40px;
-}
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
 
-.hero-grid{
-display:grid;
-grid-template-columns:1.4fr .9fr;
-gap:30px;
-}
+    .hero-sub {
+      color: var(--muted);
+      font-size: 17px;
+      margin: 0 0 22px;
+      max-width: 56ch;
+    }
 
-.hero-main{
-background:rgba(15,23,42,.7);
-border:1px solid rgba(148,163,184,.12);
-border-radius:24px;
-padding:36px;
-}
+    .hero-points {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
 
-.hero-side{
-background:rgba(15,23,42,.7);
-border:1px solid rgba(148,163,184,.12);
-border-radius:24px;
-padding:26px;
-}
+    .hero-points li {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(15,23,42,.92);
+      border: 1px solid rgba(148,163,184,.12);
+    }
 
-.eyebrow{
-font-size:13px;
-color:#7dd3fc;
-margin-bottom:12px;
-}
+    .hero-side {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
 
-h1{
-margin:0 0 16px;
-font-size:38px;
-}
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
 
-.hero-sub{
-color:var(--muted);
-margin-bottom:24px;
-}
+    .stat {
+      background: rgba(2,6,23,.5);
+      border: 1px solid rgba(148,163,184,.14);
+      border-radius: 18px;
+      padding: 18px;
+    }
 
-.hero-points{
-list-style:none;
-padding:0;
-margin:0;
-display:grid;
-gap:10px;
-}
+    .stat .num {
+      display: block;
+      font-size: 28px;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
 
-.hero-points li{
-background:#020617;
-padding:14px;
-border-radius:12px;
-border:1px solid rgba(148,163,184,.12);
-}
+    .stat .label {
+      color: var(--muted);
+      font-size: 14px;
+    }
 
-/* STATS */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-.stat-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
-}
+    .tag {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(34,197,94,.1);
+      border: 1px solid rgba(34,197,94,.2);
+      color: #bbf7d0;
+      font-size: 13px;
+    }
 
-.stat{
-background:#020617;
-padding:14px;
-border-radius:12px;
-}
+    section {
+      padding: 28px 0;
+    }
 
-.stat .num{
-font-size:24px;
-font-weight:700;
-display:block;
-}
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
 
-/* SECTION HEAD */
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.15;
+    }
 
-.section-head h2{
-margin:0;
-font-size:30px;
-}
+    .section-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 70ch;
+    }
 
-.section-head p{
-color:var(--muted);
-margin-top:6px;
-}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+    }
 
-/* ARCH */
+    .card {
+      background: rgba(15,23,42,.78);
+      border: 1px solid rgba(148,163,184,.14);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
 
-.arch-grid{
-display:grid;
-grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;
-gap:18px;
-margin-top:30px;
-}
+    .card-body {
+      padding: 22px;
+    }
 
-.arch-box{
-background:#020617;
-border-radius:16px;
-padding:18px;
-border:1px solid rgba(148,163,184,.12);
-}
+    .card-kicker {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #7dd3fc;
+      margin-bottom: 8px;
+    }
 
-.arch-title{
-font-weight:700;
-margin-bottom:6px;
-}
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
 
-.arch-desc{
-color:var(--muted);
-font-size:14px;
-}
+    .card p {
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
 
-.arch-arrow{
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:26px;
-color:var(--accent);
-}
+    .mini-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
 
-/* SCREENSHOTS */
+    .mini-list li + li { margin-top: 6px; }
 
-.screenshot-group{
-margin-top:50px;
-}
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
 
-.screenshot-group h3{
-margin-bottom:6px;
-}
+    .meta span {
+      font-size: 12px;
+      color: #cbd5e1;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(148,163,184,.08);
+      border: 1px solid rgba(148,163,184,.14);
+    }
 
-.screenshot-group p{
-color:var(--muted);
-}
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
 
-.screenshot-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:20px;
-margin-top:16px;
-}
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(15,23,42,.72);
+    }
 
-.screenshot-card{
-background:#020617;
-border-radius:16px;
-overflow:hidden;
-border:1px solid rgba(148,163,184,.12);
-}
+    .timeline-item .phase {
+      color: #7dd3fc;
+      font-weight: 700;
+    }
 
-.screenshot-card img{
-width:100%;
-cursor:pointer;
-}
+    .stack {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 14px;
+    }
 
-.screenshot-body{
-padding:16px;
-}
+    .stack .panel {
+      background: rgba(15,23,42,.78);
+      border: 1px solid rgba(148,163,184,.14);
+      border-radius: 18px;
+      padding: 18px;
+    }
 
-.screenshot-body h4{
-margin:0 0 6px;
-}
+    .panel h4 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
 
-.screenshot-body p{
-margin:0;
-color:var(--muted);
-font-size:14px;
-}
+    .panel ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
 
-/* FOOTER */
+    .quote {
+      margin-top: 14px;
+      padding: 18px 20px;
+      border-left: 4px solid var(--accent);
+      background: rgba(56,189,248,.08);
+      border-radius: 0 16px 16px 0;
+      color: #e2e8f0;
+      font-size: 16px;
+    }
 
-.footer{
-text-align:center;
-color:var(--muted);
-font-size:14px;
-padding:50px 0;
-}
+    .footer {
+      padding: 30px 0 64px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
 
-/* IMAGE MODAL */
+    /* 职缺对位 */
+    .fit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+    }
 
-.modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.9);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:999;
-}
+    /* 架构图 */
+    .architecture-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
 
-.modal img{
-max-width:90%;
-max-height:90%;
-}
+    .arch-box {
+      background: rgba(15,23,42,.82);
+      border: 1px solid rgba(148,163,184,.14);
+      border-radius: 20px;
+      padding: 22px 20px;
+      min-height: 180px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      text-align: left;
+    }
 
-.modal.show{
-display:flex;
-}
+    .arch-title {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.35;
+      color: #f8fafc;
+      margin-bottom: 14px;
+    }
 
-</style>
+    .arch-desc {
+      color: #cbd5e1;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .arch-desc span {
+      display: block;
+    }
+
+    .arch-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 28px;
+      font-weight: 800;
+      opacity: .9;
+    }
+
+    .arch-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    /* 截图 */
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .screenshot-card {
+      background: rgba(15,23,42,.78);
+      border: 1px solid rgba(148,163,184,.14);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .screenshot-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      cursor: zoom-in;
+      transition: transform .25s ease;
+      background: rgba(2,6,23,.45);
+    }
+
+    .screenshot-card img:hover {
+      transform: scale(1.02);
+    }
+
+    .screenshot-body {
+      padding: 16px 18px 18px;
+    }
+
+    .screenshot-body h4 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .screenshot-body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .screenshot-group {
+      margin-top: 34px;
+    }
+
+    .screenshot-group h3 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+
+    .screenshot-group > p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    /* 图片放大 */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2,6,23,.88);
+      padding: 24px;
+      z-index: 9999;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-inner {
+      width: min(1200px, 100%);
+      max-height: 100%;
+      display: grid;
+      gap: 14px;
+    }
+
+    .lightbox img {
+      width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #020617;
+    }
+
+    .lightbox-caption {
+      color: #cbd5e1;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      border: 0;
+      border-radius: 999px;
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,.12);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1100px) {
+      .architecture-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .arch-arrow {
+        transform: rotate(90deg);
+        min-height: 28px;
+      }
+
+      .arch-box {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .cards,
+      .stack,
+      .screenshot-grid,
+      .fit-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
-
-<nav class="nav">
-<div class="wrap nav-inner">
-
-<div class="brand">嵇映甯 <span>运营监察作品集</span></div>
-
-<div class="nav-links">
-<a href="#architecture">系统架构</a>
-<a href="#cases">系统案例</a>
-</div>
-
-</div>
-</nav>
-
-
-
-<header class="hero">
-
-<div class="wrap hero-grid">
-
-<div class="hero-main">
-
-<div class="eyebrow">运营监察 · 数据监控 · 流程审计</div>
-
-<h1>运营监察与内部系统设计</h1>
-
-<p class="hero-sub">
-专注于将运营流程转化为可监控、可追踪、可审计的内部系统，
-减少人工判断误差，提高团队协作效率与数据透明度。
-</p>
-
-<ul class="hero-points">
-
-<li>建立通道监控、差分检测与异常提醒系统，快速发现运营数据异常。</li>
-
-<li>将运营、客服与财务流程转化为结构化表单与监控报表。</li>
-
-<li>熟悉远程团队协作与跨部门沟通，具备高度保密意识。</li>
-
-</ul>
-
-</div>
-
-
-<div class="hero-side">
-
-<div class="stat-grid">
-
-<div class="stat">
-<span class="num">6+</span>
-运营与客服经验
-</div>
-
-<div class="stat">
-<span class="num">7</span>
-内部工具系统
-</div>
-
-<div class="stat">
-<span class="num">远程</span>
-远程协作经验
-</div>
-
-<div class="stat">
-<span class="num">120</span>
-中文打字 / 分
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</header>
-
-
-
-<section id="architecture">
-
-<div class="wrap">
-
-<div class="section-head">
-<h2>运营监察系统架构</h2>
-<p>通过拆解运营数据来源、规则判断与输出流程，建立可持续运行的内部监控系统。</p>
-</div>
-
-<div class="arch-grid">
-
-<div class="arch-box">
-<div class="arch-title">运营数据来源</div>
-<div class="arch-desc">订单、会员、支付通道、客服记录</div>
-</div>
-
-<div class="arch-arrow">→</div>
-
-<div class="arch-box">
-<div class="arch-title">数据整理层</div>
-<div class="arch-desc">数据清洗、结构化表单</div>
-</div>
-
-<div class="arch-arrow">→</div>
-
-<div class="arch-box">
-<div class="arch-title">监控规则层</div>
-<div class="arch-desc">异常判断、差分比对</div>
-</div>
-
-<div class="arch-arrow">→</div>
-
-<div class="arch-box">
-<div class="arch-title">监控输出</div>
-<div class="arch-desc">监控报表、异常列表</div>
-</div>
-
-<div class="arch-arrow">→</div>
-
-<div class="arch-box">
-<div class="arch-title">跨部门协作</div>
-<div class="arch-desc">运营 / 客服 / 财务</div>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-
-<section id="cases">
-
-<div class="wrap">
-
-<div class="section-head">
-<h2>系统案例</h2>
-<p>以下示意图展示真实工作中自行设计的内部工具。</p>
-</div>
-
-
-
-<div class="screenshot-group">
-
-<h3>通道监控系统</h3>
-
-<div class="screenshot-grid">
-
-<div class="screenshot-card">
-<img src="作品集/通道/通道监控决策系统(展示页面).png">
-<div class="screenshot-body">
-<h4>通道监控页面</h4>
-<p>通过可视化方式监控通道成功率与状态。</p>
-</div>
-</div>
-
-<div class="screenshot-card">
-<img src="作品集/通道/通道监控决策系统(数据对比-双缓冲差分).png">
-<div class="screenshot-body">
-<h4>数据差分系统</h4>
-<p>通过双表差分快速发现数据变化。</p>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-
-<footer class="footer">
-运营监察系统设计作品集
-</footer>
-
-
-<div class="modal" id="imgModal">
-<img id="modalImg">
-</div>
-
-<script>
-
-const modal=document.getElementById("imgModal")
-const modalImg=document.getElementById("modalImg")
-
-document.querySelectorAll(".screenshot-card img").forEach(img=>{
-img.onclick=()=>{
-modal.classList.add("show")
-modalImg.src=img.src
-}
-})
-
-modal.onclick=()=>{
-modal.classList.remove("show")
-}
-
-</script>
-
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">嵇映甯<span>・运营监察作品集</span></div>
+      <div class="nav-links">
+        <a href="#about">定位</a>
+        <a href="#fit">岗位匹配</a>
+        <a href="#architecture">架构</a>
+        <a href="#works">核心工具</a>
+        <a href="#screenshots">案例截图</a>
+        <a href="#tools">工具能力</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="about">
+    <div class="wrap hero-grid">
+      <div class="hero-main">
+        <div class="eyebrow">运营监察 × 流程稽核 × 异常监控 × 内部风控协作</div>
+        <h1>嵇映甯｜运营监察与内部风控协作</h1>
+        <p class="hero-sub">
+          具备多年运营、客服、财务协作与内部工具设计经验，擅长把高频作业流程转化为可监控、可比对、可追踪、可审查的系统机制。熟悉以 Google Sheet / Excel 建立差分监控、异常提示、自动判断、流程追踪与监控报表，能够在远程环境中支撑流程合规、数据异常分析、跨部门整改协作与高保密要求下的日常运营管理。
+        </p>
+        <ul class="hero-points">
+          <li>擅长建立通道监控、差分监测与异常提示系统，快速发现运营数据波动与异常。</li>
+          <li>能够将运营、客服与财务流程转化为可追踪表单、监控报表与规则化输出，降低流程落差与操作风险。</li>
+          <li>熟悉远程协作环境，具备跨部门沟通能力、高度保密意识与较强的自我管理能力。</li>
+        </ul>
+        <div class="quote">
+          虽未直接担任过“运营监察主管”这一正式职称，但我长期实际承担的工作内容，已高度涵盖流程监控、异常比对、规则设计、跨部门追踪与内部工具搭建。若公司已有监控标准与上级带领，我有信心在较短时间内快速接轨并持续优化执行方式。
+        </div>
+      </div>
+
+      <aside class="hero-side">
+        <div class="stat-grid">
+          <div class="stat"><span class="num">6+</span><span class="label">年运营 / 客服 / 财务协作经验</span></div>
+          <div class="stat"><span class="num">7</span><span class="label">核心内部系统与监控工具</span></div>
+          <div class="stat"><span class="num">远程</span><span class="label">熟悉远程协作节奏与高保密要求</span></div>
+          <div class="stat"><span class="num">100–120</span><span class="label">中文打字字 / 分</span></div>
+        </div>
+        <div>
+          <div class="tag-list">
+            <span class="tag">Google Sheet</span>
+            <span class="tag">Excel</span>
+            <span class="tag">差分比对</span>
+            <span class="tag">异常监控</span>
+            <span class="tag">Tampermonkey</span>
+            <span class="tag">SOP 设计</span>
+          </div>
+          <div class="quote">“我不是只在处理工作，而是把工作变成可追踪、可监控、可复制的系统。”</div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <section id="fit">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>岗位匹配</h2>
+          <p>我过往的核心能力起于运营、客服与财务协作，但长期工作重心其实集中在流程监控、异常发现、规则落地、跨部门协调与内部系统化，与运营监察、内控与风控协作职能高度重叠。</p>
+        </div>
+      </div>
+
+      <div class="fit-grid">
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">01</div>
+            <h3>流程合规监察</h3>
+            <p>熟悉把日常作业拆分为 SOP、字段规则、判断逻辑与输出结果，并通过表单、比对与提示机制检查流程是否按标准执行。</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">02</div>
+            <h3>数据异常监控</h3>
+            <p>擅长设计通道监控、差分比较、条件提示与异常标记系统，能快速发现成功率波动、结构变化与可疑趋势。</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">03</div>
+            <h3>反舞弊敏感度</h3>
+            <p>曾接触博弈体系客服与财务协作场景，对异常操作、套利样态、流程漏洞与内部风险具备基础敏感度，并能在既有标准下快速搭建辅助监控工具。</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">04</div>
+            <h3>远程协作与整改追踪</h3>
+            <p>熟悉远程工作节奏，具备高度保密意识、自我管理能力与跨部门沟通经验，能对接上级、运营、客服、财务等角色推进问题澄清与后续整改。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>运营监察系统架构</h2>
+          <p>我的工作不是单一报表，而是把运营场景拆成数据来源、规则判断、监控输出与跨部门协作四个层级，再用最低成本工具组合成可持续运行的内部监察系统。</p>
+        </div>
+      </div>
+
+      <div class="architecture-grid">
+        <div class="arch-box">
+          <div class="arch-title">运营后台 / 流程数据</div>
+          <div class="arch-desc">
+            <span>订单</span>
+            <span>会员</span>
+            <span>通道</span>
+            <span>客服记录</span>
+            <span>资金与流程事件</span>
+          </div>
+        </div>
+
+        <div class="arch-arrow">→</div>
+
+        <div class="arch-box">
+          <div class="arch-title">数据整理与同步层</div>
+          <div class="arch-desc">
+            <span>字段清洗</span>
+            <span>结构化表单</span>
+            <span>脚本辅助</span>
+            <span>手动贴入 / 拆抓</span>
+          </div>
+        </div>
+
+        <div class="arch-arrow">→</div>
+
+        <div class="arch-box">
+          <div class="arch-title">监控规则核心</div>
+          <div class="arch-desc">
+            <span>SOP 规则</span>
+            <span>条件判断</span>
+            <span>差分比对</span>
+            <span>异常提示</span>
+          </div>
+        </div>
+
+        <div class="arch-arrow">→</div>
+
+        <div class="arch-box">
+          <div class="arch-title">输出与追踪层</div>
+          <div class="arch-desc">
+            <span>监控报表</span>
+            <span>异常清单</span>
+            <span>模板生成</span>
+            <span>追踪记录</span>
+          </div>
+        </div>
+
+        <div class="arch-arrow">→</div>
+
+        <div class="arch-box">
+          <div class="arch-title">跨部门整改协作</div>
+          <div class="arch-desc">
+            <span>运营</span>
+            <span>客服</span>
+            <span>财务</span>
+            <span>上级主管</span>
+            <span>远程协同</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="arch-note">
+        核心思路：先理解流程，再把数据、规则、输出拆开，最后让系统承担重复工作，让人专注于判断、协调与例外处理。
+      </p>
+    </div>
+  </section>
+
+  <section id="works">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>监察与运营管理工具</h2>
+          <p>以下工具皆来自真实运营、客服与财务场景，以 Google Sheet 为核心，部分结合 AI 与 Tampermonkey 脚本，目标是降低人工错误、提升监控效率，并为上级与跨部门协作提供更稳定的判断依据。</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Project 01</div>
+            <h3>运营与财务稽核报表系统</h3>
+            <p>整合多来源数据，自动整理日常与长期报表内容，降低人工整理时间，并让固定格式输出更稳定、更易追踪。</p>
+            <ul class="mini-list">
+              <li>整合复杂来源数据</li>
+              <li>自动生成固定格式报表</li>
+              <li>降低人工抄写与漏登风险</li>
+            </ul>
+            <div class="meta"><span>监控报表</span><span>稽核输出</span><span>数据重组</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Project 02</div>
+            <h3>支付通道异常监控与决策支持系统</h3>
+            <p>通过数据整理、条件格式与差分比较建立即时监控页面，快速发现通道成功率、区段表现与异常变化，支撑高频判断。</p>
+            <ul class="mini-list">
+              <li>双表差分比较变化量</li>
+              <li>以目视化方式呈现成功率与状态</li>
+              <li>支持快速判断与策略调整</li>
+            </ul>
+            <div class="meta"><span>Dashboard</span><span>异常监控</span><span>决策支持</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Project 03</div>
+            <h3>协作式资金下发与记录追踪系统</h3>
+            <p>将事件填写、模板生成、群组发送内容与记账流程整合为同一套系统，显著降低多人协作时的重复操作与出错概率。</p>
+            <ul class="mini-list">
+              <li>单事件输入，多处同步输出</li>
+              <li>支持多人协作与记录一致</li>
+              <li>强化追踪、留痕与信息统一</li>
+            </ul>
+            <div class="meta"><span>多人协作</span><span>流程记录</span><span>模板系统</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Project 04</div>
+            <h3>订单查核与流程判断辅助系统</h3>
+            <p>结合书签脚本与 Sheet，快速抓取后台表格数据，让订单信息整理、查单与财务判断流程模块化、标准化。</p>
+            <ul class="mini-list">
+              <li>自制 Bookmarklet / Tampermonkey 辅助流程</li>
+              <li>后台数据快速导入与结构化</li>
+              <li>让查核与判断更快、更稳、更一致</li>
+            </ul>
+            <div class="meta"><span>JS 脚本</span><span>查核辅助</span><span>流程提示</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Project 05</div>
+            <h3>结算统计与高频处理工具</h3>
+            <p>依据日常财务需求设计可重复使用的结算表、统计表与协作报表，提升团队处理速度并保持格式统一、逻辑清晰。</p>
+            <ul class="mini-list">
+              <li>适合高频重复工作快速套用</li>
+              <li>强化跨人员交接稳定性</li>
+              <li>长期使用仍易维护与延续</li>
+            </ul>
+            <div class="meta"><span>结算</span><span>统计</span><span>高复用</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Project 06</div>
+            <h3>后台信息整合与作业辅助工具</h3>
+            <p>通过整合多平台数据库与脚本，建立高频后台场景下的辅助流程，在兼顾信息分离与保密意识的前提下提升日常作业效率。</p>
+            <ul class="mini-list">
+              <li>将分散信息重新结构化</li>
+              <li>减少人工切换与查找时间</li>
+              <li>兼顾效率与基本风控概念</li>
+            </ul>
+            <div class="meta"><span>信息整合</span><span>后台辅助</span><span>保密意识</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="training">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>培训与知识系统</h2>
+          <p>除了做工具，也擅长把个人经验沉淀为团队可复制的知识系统，让部门不仅“能做”，还能“教会别人做”，降低远程团队交接与培训风险。</p>
+        </div>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Training Matrix</div>
+            <h3>同事学习进度矩阵</h3>
+            <p>以技能矩阵方式管理各项流程掌握度，快速知道谁能独立执行、谁仍需补强，提升新人带教与交接效率。</p>
+            <div class="meta"><span>技能矩阵</span><span>培训管理</span><span>交接</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-body">
+            <div class="card-kicker">Knowledge Base</div>
+            <h3>流程知识库与 SOP</h3>
+            <p>将实务流程、流水获取方式、工商验证、常见问题与处理方式整理为可查找、可复用、可更新的流程知识系统。</p>
+            <div class="meta"><span>SOP</span><span>知识沉淀</span><span>流程文档</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="method">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>工作方法论</h2>
+          <p>我的工作不是单点工具，而是一套明确方法：先理解流程，再抽象规则，最后用最低成本工具把流程系统化、可追踪化、可复制化。</p>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="phase">Step 1</div>
+          <div>
+            <strong>先用手做，理解流程真实痛点</strong>
+            <div class="quote">我通常一开始就会想怎么把它做成系统，但还是会先手动跑几次，确认流程真正的阻碍点与容易出错的位置。</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="phase">Step 2</div>
+          <div>
+            <strong>把重复工作拆成数据、规则与操作节点</strong>
+            <div class="quote">我的强项不是单一公式，而是把复杂流程抽象成结构，知道哪些能自动、哪些该防呆、哪些该提示、哪些该留痕追踪。</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="phase">Step 3</div>
+          <div>
+            <strong>用最低成本工具快速做出可落地版本</strong>
+            <div class="quote">只要一件事会持续发生，我就会想办法把它变成系统，因为我不喜欢把脑力浪费在重复填表、重复比对与容易遗漏的工作上。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screenshots">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>监控工具与实际案例截图</h2>
+          <p>以下示意图展示我在真实运营、客服与财务场景中自行设计的内部工具。这些系统多数围绕异常监控、流程查核、数据比对、追踪输出与团队协作，与运营监察、内控与风控协作职能高度相关。点击图片可放大查看。</p>
+        </div>
+      </div>
+
+      <div class="screenshot-group">
+        <h3>通道监控与异常决策系统</h3>
+        <p>整合数据库、监控页与差分比较机制，快速发现通道波动、结构变化与异常趋势，支持高频运营监察、数据追踪与决策判断。</p>
+        <div class="screenshot-grid">
+          <article class="screenshot-card">
+            <img src="作品集/通道/通道監控決策系統(多平台公告發送自動化產出).png" alt="通道監控決策系統(多平台公告發送自動化產出)" data-caption="依据监控结果快速生成公告或通道调整信息，提升输出一致性与反应速度。">
+            <div class="screenshot-body">
+              <h4>监控结果输出 / 公告自动化</h4>
+              <p>将监控数据与公告需求整合，让异常信息、通道调整与内部通知能够更快、更统一地输出。</p>
+            </div>
+          </article>
+
+          <article class="screenshot-card">
+            <img src="作品集/通道/通道監控決策系統(自建通到資料庫).png" alt="通道監控決策系統(自建通到資料庫)" data-caption="自建通道数据库，集中管理平台、类型、费率与关键判断信息。">
+            <div class="screenshot-body">
+              <h4>自建通道数据库</h4>
+              <p>将分散的通道信息整理成结构化资料，作为监控、比对、判断与后续输出系统的核心基础。</p>
+            </div>
+          </article>
+
+          <article class="screenshot-card">
+            <img src="作品集/通道/通道監控決策系統(展示頁面).png" alt="通道監控決策系統(展示頁面)" data-caption="将关键监控信息目视化，一眼掌握成功率与异常变化。">
+            <div class="screenshot-body">
+              <h4>通道监控展示页</h4>
+              <p>通过条件格式、分区与重点字段设计，让数据波动与异常变化可以被快速识别与追踪。</p>
+            </div>
+          </article>
+
+          <article class="screenshot-card">
+            <img src="作品集/通道/通道監控決策系統(數據對比-雙緩衝差分).png" alt="通道監控決策系統(數據對比-雙緩衝差分)" data-caption="双缓冲差分比较机制，快速看出资料变化量与区段差异。">
+            <div class="screenshot-body">
+              <h4>数据对比 / 双缓冲差分</h4>
+              <p>通过双表差分比较，快速判断通道数据变化、异常波动与趋势偏移，作为监察与决策依据。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="screenshot-group">
+        <h3>订单查核与流程判断系统</h3>
+        <p>从后台快速拆抓订单信息，并把查单、验证、回复与结果记录做成可复用工具，降低人工判断落差并提升流程一致性。</p>
+        <div class="screenshot-grid">
+          <article class="screenshot-card">
+            <img src="作品集/查單/查單流程提示+產出系統(後台訂單快速拆抓資訊).png" alt="查單流程提示+產出系統(後台訂單快速拆抓資訊)" data-caption="将查单所需信息拆抓与流程提示整合，降低学习成本并提升作业一致性。">
+            <div class="screenshot-body">
+              <h4>查单流程提示 / 订单信息拆抓</h4>
+              <p>将必要判断、信息拆抓与操作步骤做进系统，提升高负载情况下的作业稳定度与查核效率。</p>
+            </div>
+          </article>
+
+          <article class="screenshot-card">
+            <img src="作品集/查單/查單流程提示+產出系統(舉例財務流程提示+產出自動化).png" alt="查單流程提示+產出系統(舉例財務流程提示+產出自動化)" data-caption="将常见财务流程的提示、回复与处理结果产出自动化。">
+            <div class="screenshot-body">
+              <h4>流程提示 / 结果产出自动化</h4>
+              <p>把查核结果、回复模板与后续登记内容快速生成，减少重复输入并强化流程一致性。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="screenshot-group">
+        <h3>协作下发与作业追踪系统</h3>
+        <p>将卡管理、下发、模板产出与记账同步整合为单一协作流程，让多人作业时仍能维持信息一致、记录清楚与流程可追踪。</p>
+        <div class="screenshot-grid">
+          <article class="screenshot-card">
+            <img src="作品集/下發/協作下發系統(U下發-模板產出-記帳產出).png" alt="協作下發系統(U下發-模板產出-記帳產出)" data-caption="单次输入数据后，即可同步产出下发模板、记账数据与内部作业所需信息。">
+            <div class="screenshot-body">
+              <h4>下发输入 / 模板产出 / 记账输出</h4>
+              <p>将事件输入、模板生成与记账登记整合成单一路径，降低重复操作、漏登与协作落差。</p>
+            </div>
+          </article>
+
+          <article class="screenshot-card">
+            <img src="作品集/下發/協作下發系統(卡管理-拆分同步).png" alt="協作下發系統(卡管理-拆分同步)" data-caption="卡管理与拆分同步功能，支持多人协作与信息一致。">
+            <div class="screenshot-body">
+              <h4>卡管理 / 拆分同步</h4>
+              <p>将卡信息、分配与拆分规则集中管理，让多人同时作业时仍可维持清晰记录与同步更新。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="screenshot-group">
+        <h3>培训 / 技能矩阵 / 流程知识系统</h3>
+        <p>把个人经验沉淀成可被追踪与复制的团队知识，协助远程团队管理、交接训练与流程掌握度可视化。</p>
+        <div class="screenshot-grid">
+          <article class="screenshot-card">
+            <img src="作品集/教育訓練/教育訓練-學習進度-技能矩陣.png" alt="教育訓練-學習進度-技能矩陣" data-caption="用矩阵方式追踪同事对各流程的掌握程度，支持带教与交接。">
+            <div class="screenshot-body">
+              <h4>技能矩阵 / 学习进度追踪</h4>
+              <p>通过可视化矩阵管理学习进度，快速掌握谁能独立作业、谁仍需补强，降低交接与带教风险。</p>
+            </div>
+          </article>
+
+          <article class="screenshot-card">
+            <img src="作品集/教育訓練/Trello 流程目視化.png" alt="Trello 流程目視化" data-caption="将流程知识与交接内容整理成可视化任务与流程板。">
+            <div class="screenshot-body">
+              <h4>Trello 流程管理 / 知识目视化</h4>
+              <p>将流程知识、任务节点与交接内容板块化，让远程团队更容易查找、更新与延续作业标准。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="screenshot-group">
+        <h3>后台信息整合与作业辅助工具</h3>
+        <p>通过资料整理与脚本辅助，减少后台切换与查找时间，并在兼顾信息分离与保密意识前提下提升日常作业效率。</p>
+        <div class="screenshot-grid">
+          <article class="screenshot-card">
+            <img src="作品集/自動登入/密鑰自動同步-登入後台小程序.png" alt="密鑰自動同步-登入後台小程序" data-caption="整合多平台账号与必要字段后，协助快速进行后台查找与作业辅助。">
+            <div class="screenshot-body">
+              <h4>信息整合 / 后台作业辅助</h4>
+              <p>将分散的后台信息重新结构化，减少人工切换、查找与输入成本，提升高频作业场景的处理效率。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>工具能力</h2>
+          <p>我偏好以 Sheet 作为业务层与操作台，再逐步结合脚本与辅助工具，形成“人 + 规则 + 工具”的稳定工作流。</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="panel">
+          <h4>数据与报表</h4>
+          <ul>
+            <li>Google Sheet</li>
+            <li>Excel</li>
+            <li>差分比对</li>
+            <li>条件监控</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h4>流程与稽核</h4>
+          <ul>
+            <li>SOP 设计</li>
+            <li>流程追踪</li>
+            <li>监控报表</li>
+            <li>结果留痕</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h4>脚本与效率工具</h4>
+          <ul>
+            <li>Tampermonkey</li>
+            <li>Bookmarklet / JS</li>
+            <li>后台辅助流程</li>
+            <li>信息拆抓</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h4>协作能力</h4>
+          <ul>
+            <li>远程协作</li>
+            <li>跨部门对接</li>
+            <li>培训与交接</li>
+            <li>高保密意识</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    ｜运营监察｜
+  </footer>
+
+  <div id="lightbox" class="lightbox">
+    <button class="lightbox-close" aria-label="关闭">×</button>
+    <div class="lightbox-inner">
+      <img id="lightbox-img" src="" alt="放大图片">
+      <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCaption = document.getElementById('lightbox-caption');
+      const closeBtn = document.querySelector('.lightbox-close');
+
+      document.querySelectorAll('.screenshot-card img').forEach((img) => {
+        img.addEventListener('click', () => {
+          lightbox.classList.add('open');
+          lightboxImg.src = img.src;
+          lightboxImg.alt = img.alt || '放大图片';
+          lightboxCaption.textContent = img.dataset.caption || img.alt || '';
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+        lightboxImg.src = '';
+        lightboxCaption.textContent = '';
+        document.body.style.overflow = '';
+      }
+
+      closeBtn.addEventListener('click', closeLightbox);
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+      });
+    })();
+  </script>
 </body>
 </html>
