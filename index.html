@@ -351,38 +351,79 @@
     }
 
     /* === 升級：系統架構圖 === */
-    .architecture-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr;
-      gap: 14px;
-      align-items: center;
-      margin-top: 20px;
-    }
+    /* === 系統架構圖：重做排版 === */
+.architecture-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr auto 1fr;
+  gap: 18px;
+  align-items: stretch;
+  margin-top: 24px;
+}
 
-    .arch-box {
-      background: rgba(15,23,42,.82);
-      border: 1px solid rgba(148,163,184,.14);
-      border-radius: 18px;
-      padding: 18px;
-      min-height: 110px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      box-shadow: var(--shadow);
-    }
+.arch-box {
+  background: rgba(15,23,42,.82);
+  border: 1px solid rgba(148,163,184,.14);
+  border-radius: 20px;
+  padding: 22px 20px;
+  min-height: 180px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+}
 
-    .arch-arrow {
-      text-align: center;
-      color: var(--accent);
-      font-size: 26px;
-      font-weight: 800;
-    }
+.arch-title {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #f8fafc;
+  margin-bottom: 14px;
+}
 
-    .arch-note {
-      margin-top: 16px;
-      color: var(--muted);
-    }
+.arch-desc {
+  color: #cbd5e1;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.arch-desc span {
+  display: block;
+}
+
+.arch-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 28px;
+  font-weight: 800;
+  opacity: .9;
+}
+
+.arch-note {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* 平板以下：改成直式流程 */
+@media (max-width: 1100px) {
+  .architecture-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .arch-arrow {
+    transform: rotate(90deg);
+    min-height: 28px;
+  }
+
+  .arch-box {
+    min-height: auto;
+  }
+}
 
     /* === 升級：截圖卡片 === */
     .screenshot-grid {
@@ -567,30 +608,79 @@
     </div>
   </header>
 
-  <section id="architecture">
-    <div class="wrap">
-      <div class="section-head">
-        <div>
-          <h2>系統架構圖</h2>
-          <p>我的作品不是單一報表，而是把營運場景拆成資料來源、規則判斷、系統輸出與跨部門協作四個層次，再用最低成本工具組成可長期運作的內部系統。</p>
+    <section id="architecture">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>系統架構圖</h2>
+        <p>我的作品不是單一報表，而是把營運場景拆成資料來源、規則判斷、系統輸出與跨部門協作四個層次，再用最低成本工具組成可長期運作的內部系統。</p>
+      </div>
+    </div>
+
+    <div class="architecture-grid">
+      <div class="arch-box">
+        <div class="arch-title">營運平台 / 後台資料</div>
+        <div class="arch-desc">
+          <span>訂單</span>
+          <span>通道</span>
+          <span>資金</span>
+          <span>流程事件</span>
         </div>
       </div>
 
-      <div class="architecture-grid">
-        <div class="arch-box"><strong>營運平台 / 後台資料</strong><br>訂單、通道、資金、流程事件</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-box"><strong>擷取與同步層</strong><br>Tampermonkey / Bookmarklet / 手動貼入</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-box"><strong>Google Sheet 系統核心</strong><br>清洗資料、公式計算、規則模組、防呆提示</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-box"><strong>輸出與決策層</strong><br>模板生成、記帳產出、監控儀表、決策輔助</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-box"><strong>團隊協作與培訓</strong><br>SOP、知識庫、技能矩陣、跨部門同步</div>
+      <div class="arch-arrow">→</div>
+
+      <div class="arch-box">
+        <div class="arch-title">擷取與同步層</div>
+        <div class="arch-desc">
+          <span>Tampermonkey</span>
+          <span>Bookmarklet</span>
+          <span>手動貼入</span>
+        </div>
       </div>
 
-      <p class="arch-note">核心思路：先理解流程，再把資料、規則、輸出拆開，最後讓系統承擔重複工作，讓人專注於判斷、協調與例外處理。</p>
+      <div class="arch-arrow">→</div>
+
+      <div class="arch-box">
+        <div class="arch-title">Google Sheet 系統核心</div>
+        <div class="arch-desc">
+          <span>清洗資料</span>
+          <span>公式計算</span>
+          <span>規則模組</span>
+          <span>防呆提示</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">→</div>
+
+      <div class="arch-box">
+        <div class="arch-title">輸出與決策層</div>
+        <div class="arch-desc">
+          <span>模板生成</span>
+          <span>記帳產出</span>
+          <span>監控儀表</span>
+          <span>決策輔助</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">→</div>
+
+      <div class="arch-box">
+        <div class="arch-title">團隊協作與培訓</div>
+        <div class="arch-desc">
+          <span>SOP</span>
+          <span>知識庫</span>
+          <span>技能矩陣</span>
+          <span>跨部門同步</span>
+        </div>
+      </div>
     </div>
-  </section>
+
+    <p class="arch-note">
+      核心思路：先理解流程，再把資料、規則、輸出拆開，最後讓系統承擔重複工作，讓人專注於判斷、協調與例外處理。
+    </p>
+  </div>
+</section>
 
   <section id="screenshots">
     <div class="wrap">
