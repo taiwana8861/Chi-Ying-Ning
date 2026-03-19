@@ -343,6 +343,165 @@
       font-size: 14px;
     }
 
+
+    <style>
+/* === 升級：系統架構圖 === */
+.architecture-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap: 14px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.arch-box {
+  background: rgba(15,23,42,.82);
+  border: 1px solid rgba(148,163,184,.14);
+  border-radius: 18px;
+  padding: 18px;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.arch-arrow {
+  text-align: center;
+  color: var(--accent);
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.arch-note {
+  margin-top: 16px;
+  color: var(--muted);
+}
+
+/* === 升級：截圖卡片 === */
+.screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.screenshot-card {
+  background: rgba(15,23,42,.78);
+  border: 1px solid rgba(148,163,184,.14);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.screenshot-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  cursor: zoom-in;
+  transition: transform .25s ease;
+  background: rgba(2,6,23,.45);
+}
+
+.screenshot-card img:hover {
+  transform: scale(1.02);
+}
+
+.screenshot-body {
+  padding: 16px 18px 18px;
+}
+
+.screenshot-body h4 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.screenshot-body p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.screenshot-group {
+  margin-top: 34px;
+}
+
+.screenshot-group h3 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.screenshot-group > p {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+/* === 升級：圖片放大 === */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2,6,23,.88);
+  padding: 24px;
+  z-index: 9999;
+}
+
+.lightbox.open {
+  display: flex;
+}
+
+.lightbox-inner {
+  width: min(1200px, 100%);
+  max-height: 100%;
+  display: grid;
+  gap: 14px;
+}
+
+.lightbox img {
+  width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 16px;
+  background: #020617;
+}
+
+.lightbox-caption {
+  color: #cbd5e1;
+  text-align: center;
+  font-size: 14px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  border: 0;
+  border-radius: 999px;
+  width: 42px;
+  height: 42px;
+  background: rgba(255,255,255,.12);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@media (max-width: 980px) {
+  .architecture-grid,
+  .screenshot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .arch-arrow {
+    transform: rotate(90deg);
+  }
+}
+</style>
+  
     @media (max-width: 980px) {
       .hero-grid, .cards, .stack {
         grid-template-columns: 1fr;
@@ -403,42 +562,167 @@
     </div>
   </header>
 
-  <section id="about">
-    <div class="wrap">
-      <div class="section-head">
-        <div>
-          <h2>角色定位</h2>
-          <p>從營運現場出發，擅長用最低成本工具快速搭出能真正落地的內部系統。不是只會做報表，而是能把資料、規則、協作與培訓整合成可運作的流程架構。</p>
-        </div>
+  <section id="architecture">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>系統架構圖</h2>
+        <p>我的作品不是單一報表，而是把營運場景拆成資料來源、規則判斷、系統輸出與跨部門協作四個層次，再用最低成本工具組成可長期運作的內部系統。</p>
       </div>
-      <div class="cards">
-        <article class="card">
-          <div class="card-body">
-            <div class="card-kicker">Core Capability</div>
-            <h3>營運流程設計與自動化</h3>
-            <ul class="mini-list">
-              <li>將重複性工作流程系統化與模組化</li>
-              <li>設計 SOP、流程助手與內部知識系統</li>
-              <li>透過工具降低人工錯誤率並提升團隊效率</li>
-            </ul>
-            <div class="meta"><span>流程拆解</span><span>模組化</span><span>防呆設計</span></div>
+    </div>
+
+    <div class="architecture-grid">
+      <div class="arch-box"><strong>營運平台 / 後台資料</strong><br>訂單、通道、資金、流程事件</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>擷取與同步層</strong><br>Tampermonkey / Bookmarklet / 手動貼入</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>Google Sheet 系統核心</strong><br>清洗資料、公式計算、規則模組、防呆提示</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>輸出與決策層</strong><br>模板生成、記帳產出、監控儀表、決策輔助</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box"><strong>團隊協作與培訓</strong><br>SOP、知識庫、技能矩陣、跨部門同步</div>
+    </div>
+
+    <p class="arch-note">核心思路：先理解流程，再把資料、規則、輸出拆開，最後讓系統承擔重複工作，讓人專注於判斷、協調與例外處理。</p>
+  </div>
+</section>
+
+<section id="screenshots">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>作品示意截圖</h2>
+        <p>以下示意圖展示我在真實營運與財務場景中，自行設計的內部工具。點擊圖片可放大檢視。</p>
+      </div>
+    </div>
+
+    <div class="screenshot-group">
+      <h3>協作下發系統</h3>
+      <p>將卡管理、U 下發、模板產出與記帳同步整合為單一協作流程。</p>
+      <div class="screenshot-grid">
+        <article class="screenshot-card">
+          <img src="作品集/下發/協作下發系統(U下發-模板產出-記帳產出).png" alt="協作下發系統(U下發-模板產出-記帳產出)" data-caption="單次輸入資料後，即可同步產出下發模板、記帳資料與內部作業所需資訊。">
+          <div class="screenshot-body">
+            <h4>U 下發 / 模板產出 / 記帳產出</h4>
+            <p>把事件輸入、模板生成與記帳登錄整合成一條流程，降低重複操作與漏登風險。</p>
           </div>
         </article>
-        <article class="card">
-          <div class="card-body">
-            <div class="card-kicker">Data & Reporting</div>
-            <h3>數據整理與報表系統</h3>
-            <ul class="mini-list">
-              <li>熟練 Excel / Google Sheet 報表設計</li>
-              <li>擅長使用公式與條件格式建立長期可使用的報表系統</li>
-              <li>能從複雜資料中快速整理出可供決策使用的資訊</li>
-            </ul>
-            <div class="meta"><span>XLOOKUP</span><span>條件格式</span><span>協作報表</span></div>
+
+        <article class="screenshot-card">
+          <img src="作品集/下發/協作下發系統(卡管理-拆分同步).png" alt="協作下發系統(卡管理-拆分同步)" data-caption="卡管理與拆分同步功能，讓多人協作下發時更穩定且更不容易出錯。">
+          <div class="screenshot-body">
+            <h4>卡管理 / 拆分同步</h4>
+            <p>將卡資訊、分配與拆分規則集中管理，支援多人同時協作。</p>
           </div>
         </article>
       </div>
     </div>
-  </section>
+
+    <div class="screenshot-group">
+      <h3>密鑰自動同步 / 後台快速登入小工具</h3>
+      <p>透過資料庫整合與腳本輔助，縮短後台登入操作時間，同時保留必要的資訊分離與風險控管概念。</p>
+      <div class="screenshot-grid">
+        <article class="screenshot-card">
+          <img src="作品集/自動登入/密鑰自動同步登入系統.png" alt="密鑰自動同步登入系統" data-caption="整合多平台帳號與必要欄位後，協助快速登入後台系統。">
+          <div class="screenshot-body">
+            <h4>密鑰自動同步登入系統</h4>
+            <p>把分散的登入資料重新結構化，減少人工切換與查找時間。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="screenshot-group">
+      <h3>查單流程提示與產出系統</h3>
+      <p>快速從後台擷取訂單資訊，並把查單、驗證、回覆與記錄流程做成可複用的工具。</p>
+      <div class="screenshot-grid">
+        <article class="screenshot-card">
+          <img src="作品集/查單/查單流程提示.png" alt="查單流程提示" data-caption="把查單時的必要判斷與操作步驟直接做進系統，降低新人學習成本。">
+          <div class="screenshot-body">
+            <h4>查單流程提示</h4>
+            <p>系統內建流程提醒與步驟提示，讓操作員在高負載情況下仍可穩定完成判斷。</p>
+          </div>
+        </article>
+
+        <article class="screenshot-card">
+          <img src="作品集/查單/查單流程自動化產出.png" alt="查單流程自動化產出" data-caption="將財務流程中常見的文字模板與處理結果產出自動化。">
+          <div class="screenshot-body">
+            <h4>查單流程自動化產出</h4>
+            <p>把查單結果、回覆模板與後續登錄內容快速生成，減少重複手打。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="screenshot-group">
+      <h3>教育訓練 / 技能矩陣系統</h3>
+      <p>把個人經驗沉澱成團隊知識，讓培訓、交接與技能掌握可被追蹤與複製。</p>
+      <div class="screenshot-grid">
+        <article class="screenshot-card">
+          <img src="作品集/教育訓練/技能矩陣.png" alt="技能矩陣" data-caption="以矩陣方式追蹤同仁對各流程的掌握程度，支援帶教與交接。">
+          <div class="screenshot-body">
+            <h4>技能矩陣</h4>
+            <p>用可視化方式管理學習進度，快速知道誰能做、誰需要補強。</p>
+          </div>
+        </article>
+
+        <article class="screenshot-card">
+          <img src="作品集/教育訓練/Trello流程管理.png" alt="Trello流程管理" data-caption="把流程知識與工作交接內容整理為可視化任務與流程板。">
+          <div class="screenshot-body">
+            <h4>Trello 流程管理</h4>
+            <p>搭配板塊與流程卡片，讓知識系統更容易查找與更新。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="screenshot-group">
+      <h3>通道監控決策系統</h3>
+      <p>整合資料庫、監控頁與差分比較機制，支援高頻營運判斷與通道策略調整。</p>
+      <div class="screenshot-grid">
+        <article class="screenshot-card">
+          <img src="作品集/通道/通道監控公告自動化.png" alt="通道監控公告自動化" data-caption="依據監控結果快速生成公告或通道調整資訊。">
+          <div class="screenshot-body">
+            <h4>公告發送自動化</h4>
+            <p>把多平台公告需求與監控資料結合，讓資訊輸出更快更一致。</p>
+          </div>
+        </article>
+
+        <article class="screenshot-card">
+          <img src="作品集/通道/通道資料庫.png" alt="通道資料庫" data-caption="自建通道資料庫，集中管理平台、類型、費率與關鍵判斷資訊。">
+          <div class="screenshot-body">
+            <h4>自建通道資料庫</h4>
+            <p>將分散通道資訊重新整理成結構化資料，作為其他表單與判斷系統的基礎。</p>
+          </div>
+        </article>
+
+        <article class="screenshot-card">
+          <img src="作品集/通道/通道監控展示頁.png" alt="通道監控展示頁" data-caption="將關鍵監控資訊目視化，一眼掌握成功率與異常變化。">
+          <div class="screenshot-body">
+            <h4>通道監控展示頁</h4>
+            <p>利用條件格式與分區資訊，讓營運判斷變成高可視化流程。</p>
+          </div>
+        </article>
+
+        <article class="screenshot-card">
+          <img src="作品集/通道/通道數據差分.png" alt="通道數據差分" data-caption="雙緩衝差分比較，快速看出資料變化量與區段差異。">
+          <div class="screenshot-body">
+            <h4>數據對比 / 雙緩衝差分</h4>
+            <p>透過雙表比較機制，快速判斷通道數據變化與趨勢。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="lightbox" class="lightbox">
+  <button class="lightbox-close" aria-label="關閉">×</button>
+  <div class="lightbox-inner">
+    <img id="lightbox-img" src="" alt="放大圖片">
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+  </div>
+</div>
 
   <section id="works">
     <div class="wrap">
@@ -650,5 +934,38 @@
       作品集頁面示意｜可再依需求加入截圖、案例細節、聯絡方式與接案服務說明。
     </div>
   </footer>
+  <script>
+  (function () {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const closeBtn = document.querySelector('.lightbox-close');
+
+    document.querySelectorAll('.screenshot-card img').forEach((img) => {
+      img.addEventListener('click', () => {
+        lightbox.classList.add('open');
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt || '放大圖片';
+        lightboxCaption.textContent = img.dataset.caption || img.alt || '';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightboxImg.src = '';
+      lightboxCaption.textContent = '';
+    }
+
+    closeBtn.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  })();
+</script>
 </body>
 </html>
